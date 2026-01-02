@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ระบบรายงานเวรสายตรวจ</title>
+<style>
+    body {
+        font-family: Tahoma, sans-serif;
+        background: #f0f2f5;
+        padding: 20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    h1 {
+        text-align: center;
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        margin: 4px 0;
+        font-size: 15px;
+        cursor: pointer;
+    }
+    textarea {
+        width: 100%;
+        height: 260px;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>ระบบรายงานเวรสายตรวจ</h1>
+
+<div id="buttons"></div>
+
+<textarea id="report" readonly placeholder="เลือกรายงานจุด..."></textarea>
+<button onclick="copyReport()">📋 คัดลอกข้อความ</button>
+</div>
+
+<script>
+const places = {
+    1: "ตอนยานยนต์ ส.1 พัน.101",
+    2: "เสนารักษ์ ส.1 พัน.101",
+    3: "จุดที่ 3 (สำรอง)",
+    4: "ร้อย.บก. ส.1 พัน.101",
+    5: "สนง.ผบช. ส.1 พัน.101",
+    6: "คลัง สป.5 ส.1 พัน.101",
+    7: "คลัง สป.2,4 ส.1 พัน.101",
+    8: "โรงเลี้ยง ส.1 พัน.101",
+    9: "ร้อย.4 ส.1 พัน.101",
+    10: "สถานีวิทยุ พล.1 รอ.",
+    11: "สวนปันสุข ส.1 พัน.101",
+    12: "แฟลต 8 ส.1 พัน.101",
+    13: "แฟลต 10 ส.1 พัน.101",
+    14: "คลัง สป.3 ส.1 พัน.101"
+};
+
+const buttonsDiv = document.getElementById("buttons");
+
+// สร้างปุ่ม 14 จุด
+for (let i = 1; i <= 14; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = `รายงานจุดที่ ${i}`;
+    btn.onclick = () => generateReport(i);
+    buttonsDiv.appendChild(btn);
+}
+
+// แปลงวันที่เป็นภาษาไทย
+function thaiDate(date) {
+    const months = [
+        "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+        "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
+    ];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear() + 543}`;
+}
+
+function generateReport(point) {
+    const now = new Date();
+    const dateText = thaiDate(now);
+    const timeText = now.toLocaleTimeString("th-TH", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    const report = `เรียน ผู้บังคับบัญชา:
+- เพื่อกรุณาทราบ ครับ
+
+เมื่อวันที่ ${dateText}
+เวลา ${timeText} น.
+
+เวรสายตรวจ เข้าทำการตรวจ
+- จุดที่ ${point}
+- สถานที่ ${places[point]}
+
+เรียบร้อย ครับ`;
+
+    document.getElementById("report").value = report;
+}
+
+function copyReport() {
+    const text = document.getElementById("report");
+    if (!text.value) {
+        alert("กรุณาเลือกรายงานก่อน");
+        return;
+    }
+    text.select();
+    document.execCommand("copy");
+    alert("คัดลอกข้อความเรียบร้อยแล้ว");
+}
+</script>
+
+</body>
+</html>
